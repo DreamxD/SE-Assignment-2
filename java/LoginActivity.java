@@ -1,4 +1,4 @@
-/*package com.jikexueyuan.jike_chat;
+package com.jikexueyuan.jike_chat;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -114,4 +114,4 @@ public class LoginActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
-*/
+
