@@ -19,28 +19,28 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.jikexueyuan.jike_chat.App.username;
-
 public class RegActivity extends AppCompatActivity {
-
-    public String JSONTokener(String in){
-        //consume an option byte order mark (BOM) if it exists
-        if (in != null && in.startsWith("\ufeff")){
-            in = in.substring(1);
-        }
-        return in;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reg);
 
-        setTitle("注册");
+        setTitle("Register");
 
+        Button btn_back = (Button)findViewById(R.id.btn_back);
         Button btn_reg = (Button)findViewById(R.id.btn_reg);
         final EditText et_username = (EditText)findViewById(R.id.et_username);
         final EditText et_password = (EditText)findViewById(R.id.et_password);
+
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RegActivity.this,LoginActivity.class);
+                startActivity(intent);
+                RegActivity.this.finish();
+            }
+        });
 
         btn_reg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +49,7 @@ public class RegActivity extends AppCompatActivity {
                 String password = et_password.getText().toString();
 
                 if(username.equals("") || password.equals("")) {
-                    Toast.makeText(RegActivity.this, "用户名或密码不能为空", Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegActivity.this, "username or password cannot be blank", Toast.LENGTH_LONG).show();
                 }
                 else {
                     AsyncHttpClient client = new AsyncHttpClient();
@@ -63,19 +63,20 @@ public class RegActivity extends AppCompatActivity {
                             Log.e("debug", response);
                             JSONObject object = null;
                             try {
-                                object =  new JSONObject(response);
+                                object = new JSONObject(response);
                                 String status = object.getString("status");
                                 if (status.equals("exists")) {
-                                    Toast.makeText(RegActivity.this, "用户名已存在，请更换", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(RegActivity.this, "username already exist", Toast.LENGTH_LONG).show();
                                 } else if(status.equals("error")) {
-                                    Toast.makeText(RegActivity.this, "出现错误，请稍后重试", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(RegActivity.this, "error, please try again later", Toast.LENGTH_LONG).show();
 
                                 }
                                 else if(status.equals("success")){
                                     String token = object.getString("token");
-                                     App.token = token;
+                                    App.token = token;
                                     App.username = username;
                                     App.isLogin = true;
+                                    Toast.makeText(RegActivity.this, "login success", Toast.LENGTH_LONG).show();
                                     Intent intent = new Intent(RegActivity.this, MainActivity.class);
                                     startActivity(intent);
                                     RegActivity.this.finish();
@@ -87,7 +88,7 @@ public class RegActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-                            Toast.makeText(RegActivity.this, "网络错误，请稍后重试", Toast.LENGTH_LONG).show();
+                            Toast.makeText(RegActivity.this, "register internet error", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
